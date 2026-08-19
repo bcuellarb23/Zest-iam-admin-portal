@@ -15,7 +15,7 @@ def init_oauth(app):
         client_id=os.getenv("OKTA_CLIENT_ID"),
         client_secret=os.getenv("OKTA_CLIENT_SECRET"),
         server_metadata_url=f"{os.getenv('OKTA_ISSUER')}/.well-known/openid-configuration",
-        client_kwargs={"scope": "openid profile email groups"},
+        client_kwargs={"scope": "openid profile email"},
     )
 
 

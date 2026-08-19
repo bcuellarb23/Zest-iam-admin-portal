@@ -9,6 +9,14 @@ Skills demonstrated
 * Separation of Authentication (AuthN) versus Authorization (AuthZ)
 
 Screenshots 
+### Okta loged user
+![Okta login](screenshots/login.png) 
+
+### Admin dashboard
+![Dashboard](screenshots/admin-dashboard.png)
+
+### RBAC enforcement - 403 forbidden for unauthorized role
+![forbidden](screenshots/forbidden.png) 
 
 
 Running locally

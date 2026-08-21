@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import session, jsonify
+from flask import session, jsonify, render_template, request, redirect, url_for
 
 def require_role(*allowed_roles):
     """
@@ -27,11 +27,12 @@ def require_role(*allowed_roles):
             user_groups = user.get("groups", [])
 
             if not any(role in user_groups for role in allowed_roles):
-                return jsonify({
-                    "error": "forbidden",
-                    "message": f"Requires one of: {', '.join(allowed_roles)}",
-                    "your_groups": user_groups
-                }), 403
+                if request.accept_mimetypes.accept_html:
+                    return render_template(
+                        "forbidden.html",
+                        required_roles=",".join(allowed_roles),
+                        user_roles=",".join(user_groups) if user_groups else "None"
+                ), 403
 
             return f(*args, **kwargs)
         return wrapped

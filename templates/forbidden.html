@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Access Denied · Zest Admin Portal</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Namdhinggo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="forbidden-body">
+  <div class="deny-card">
+    <div class="deny-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="#7A2331" stroke-width="2" stroke-linecap="round"/>
+        <rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#7A2331" stroke-width="2"/>
+      </svg>
+    </div>
+    <p class="deny-code">403 · Access Denied</p>
+    <h1>You don't have clearance for this panel.</h1>
+    <p class="body-text">This section requires a different role than the one currently assigned to your account.</p>
+    <div class="req">
+      <span class="label">Requires:</span> <span class="val">{{ required_roles }}</span><br>
+      <span class="label">Your roles:</span> <span class="val">{{ user_roles }}</span>
+    </div>
+    <a class="back-link" href="/">← Back to dashboard</a>
+  </div>
+</body>
+</html>

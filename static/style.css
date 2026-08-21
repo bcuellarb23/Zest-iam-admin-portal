@@ -27,8 +27,6 @@
     --ink-dark-2: rgb(38, 41, 48);             /* subtle depth within badge */
     --gold: rgb(201, 162, 39);                 /* accent line, ID text, hairline */
     --gold-soft: rgba(201, 162, 39, 0.14);
-    --wine: rgb(122, 35, 49);                  /* refined deep red, Admin clearance */
-    --wine-soft: rgba(122, 35, 49, 0.10);
     --slate-blue: rgb(59, 91, 165);            /* Analyst clearance */
     --slate-blue-soft: rgba(59, 91, 165, 0.10);
     --sage: rgb(76, 122, 93);                  /* muted elegant green, unlocked */
@@ -407,3 +405,88 @@ footer.dash-footer {
 }
 
 footer.dash-footer a { color: var(--ink-soft); font-weight: 600; }
+
+/* --------------------- 
+ * forbidden 
+ * ---------------------*/ 
+
+ body.forbidden-body {
+    background:
+      radial-gradient(1200px 400px at 50% -10%, rgba(122, 35, 49, 0.05), transparent 60%),
+      var(--page-bg);
+    padding-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+ 
+  .deny-card {
+    background: var(--panel);
+    border: 1px solid rgba(20,20,25,0.09);
+    border-top: 3px solid var(--wine);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: var(--shadow-md);
+    text-align: left;
+  }
+ 
+  .deny-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--wine-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+  }
+ 
+  .deny-code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--wine);
+    font-weight: 700;
+    text-align: left;
+    opacity: 1;
+    margin: 0 0 10px;
+  }
+ 
+  .deny-card h1 {
+    font-size: 21px;
+    font-weight: 700;
+    text-align: left;
+    opacity: 1;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+ 
+  .deny-card p.body-text {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.55;
+    text-align: left;
+    opacity: 1;
+    margin: 0 0 22px;
+  }
+ 
+  .req {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: var(--page-bg);
+    border: 1px solid rgba(20,20,25,0.07);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    line-height: 1.8;
+  }
+ 
+  .req .label { color: var(--ink-faint); }
+  .req .val { color: var(--ink-dark); font-weight: 700; }
+ 
+  a.back-link {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--wine);
+    text-decoration: none;
+  }

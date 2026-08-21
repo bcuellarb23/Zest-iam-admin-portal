@@ -9,7 +9,7 @@ Skills demonstrated
 * Separation of Authentication (AuthN) versus Authorization (AuthZ)
 
 Screenshots 
-### Okta loged user
+### Okta login
 ![Okta login](screenshots/login.png) 
 
 ### Admin dashboard

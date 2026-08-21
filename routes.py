@@ -1,8 +1,43 @@
-from flask import Blueprint, session, jsonify
+from flask import Blueprint, session, jsonify, render_template
 from roles import require_role
 
 routes_bp = Blueprint("routes", __name__)
 
+SECTION_DEFINITIONS = [
+    {
+        "name": "Manage Users",
+        "url": "/admin/users",
+        "description": "Create, edit, and deactivate employee accounts across the platform.",
+        "roles": ["Admin"],
+    },
+    {
+        "name": "View Reports",
+        "url": "/reports",
+        "description": "Active user counts, weekly signups, and platform health metrics.",
+        "roles": ["Admin", "Analyst"],
+    },
+    {
+        "name": "Training Materials",
+        "url": "/training",
+        "description": "Onboarding guides and nutrition coaching resources for staff.",
+        "roles": ["Admin", "Trainer"],
+    },
+]
+
+ROLE_COLORS = {
+    "Admin": "#E14925",     # Orange
+    "Analyst": "#3B5BA5",   # slate blue
+    "Trainer": "#C9A227",   # gold
+    "Employee": "#4C7A5D",  # sage
+}
+
+def get_initials(name):
+    if not name:
+        return "?"
+    parts = name.strip().split()
+    if len(parts) == 1:
+        return parts[0][:2].upper()
+    return (parts[0][0] + parts[-1][0]).upper()
 
 @routes_bp.route("/")
 def dashboard():
@@ -11,22 +46,24 @@ def dashboard():
         return '<a href="/login">Log in with Okta</a>'
 
     groups = user.get("groups", [])
-    available_sections = []
+    all_sections = [
+        {**s, "unlocked": any(role in groups for role in s["roles"])}
+        for s in SECTION_DEFINITIONS
+    ]
 
-    if "Admin" in groups:
-        available_sections.append({"name": "Manage Users", "url": "/admin/users"})
-    if "Analyst" in groups:
-        available_sections.append({"name": "View Reports", "url": "/reports"})
-    if "Trainer" in groups:
-        available_sections.append({"name": "Training Materials", "url": "/training"})
+    unlocked_count = sum(1 for s in all_sections if s["unlocked"])
 
-    return jsonify({
-        "message": f"Welcome to Zest Admin Portal, {user.get('name')}",
-        "your_groups": groups,
-        "available_sections": available_sections
-    })
-
-
+    return render_template(
+        "dashboard.html",
+        user=user,
+        groups=groups,
+        all_sections=all_sections,
+        unlocked_count=unlocked_count,
+        total_count=len(all_sections),
+        initials=get_initials(user.get("name")),
+        role_colors=ROLE_COLORS,
+    )
+    
 @routes_bp.route("/admin/users")
 @require_role("Admin")
 def manage_users():

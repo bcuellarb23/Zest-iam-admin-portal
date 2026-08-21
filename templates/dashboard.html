@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zest Admin Portal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Namdhinggo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="{{ img_path }}favicon.ico"> 
+</head>
+<body class="dash-body">
+  <div class="wrap-dash">
+    <div class="topline">
+      <div>
+        <p class="eyebrow">Workforce Identity Portal</p>
+        <div class="brand"><span class="dot"></span> Zest Admin</div>
+      </div>
+      <div class="session-tag"><span class="dot"></span> session active</div>
+    </div>
+ 
+    <div class="badge">
+      <div class="badge-top">
+        <div class="badge-person">
+          <div class="avatar">{{ initials }}</div>
+          <div>
+            <p class="badge-id">ID · {{ user.get('sub', 'UNKNOWN')[:14] }}</p>
+            <p class="badge-name">{{ user.get('name', 'Unknown User') }}</p>
+            <p class="badge-email">{{ user.get('email', '') }}</p>
+          </div>
+        </div>
+        <div class="clearance-chips">
+          {% for group in groups %}
+            <span class="chip">
+              <span class="swatch" style="background:{{ role_colors.get(group, '#999') }}"></span>
+              {{ group }}
+            </span>
+          {% else %}
+            <span class="chip">No roles</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="credential-line">
+        <span>Authorized Personnel Only</span>
+      </div>
+    </div> 
+
+    <div class="section-header">
+      <p class="section-label">Access Panels</p>
+      <span class="section-count"><strong>{{ unlocked_count }}</strong> of {{ total_count }} unlocked</span> <!-- FIXME inplement the count -->
+    </div>
+
+    <div class="grid">
+      {% for section in all_sections %}
+        <div class="panel {{ 'unlocked' if section.unlocked else 'locked' }}">
+          <div class="panel-top">
+            <div class="panel-icon">
+              {% if section.unlocked %}
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10V7a5 5 0 0 1 9.9-1" stroke="#4C7A5D" stroke-width="2" stroke-linecap="round"/>
+                <rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#4C7A5D" stroke-width="2"/>
+              </svg>
+              {% else %}
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="#A0A0A6" stroke-width="2" stroke-linecap="round"/>
+                <rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#A0A0A6" stroke-width="2"/>
+              </svg>
+              {% endif %}
+            </div>
+            <span class="status {{ 'unlocked' if section.unlocked else 'locked' }}">
+              {{ 'Unlocked' if section.unlocked else 'Locked' }}
+            </span>
+          </div>
+          <p class="panel-name">{{ section.name }}</p>
+          <p class="panel-desc">{{ section.description }}</p>
+          {% if section.unlocked %}
+            <a class="open-link" href="{{ section.url }}">Open →</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+ 
+    <footer class="dash-footer">
+      <span>Authenticated via Okta · OIDC</span>
+      <a href="/logout">Log out</a>
+    </footer>
+  </div>
+</body>
+</html>

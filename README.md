@@ -23,19 +23,19 @@ Running locally
 
 bash 
 
-git clone git@github.com:bcuellarb23/Zest-iam-admin-portal.git
-cd Zest-iam-admin-portal
-python3 -m venv venv
-source venv/bin/activate       # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env           # then fill in your own Okta app credentials
-python3 app.py
+git clone git@github.com:bcuellarb23/Zest-iam-admin-portal.git  
+cd Zest-iam-admin-portal  
+python3 -m venv venv  
+source venv/bin/activate       # Windows: venv\Scripts\activate  
+pip install -r requirements.txt  
+cp .env.example .env           # then fill in your own Okta app credentials  
+python3 app.py  
 
 Visit http://localhost:8080 and log in with an Okta account assigned to this app.
 
 Environment variables .env
 
-OKTA_CLIENT_ID = Client If from Okta app integration
-OKTA_CLIENT_SECRET = Client secret from Okta app integration
-OKTA_ISSUER = Okta authorization server issuer 
-FLASK_SECRET_KEY = ramdom string used to sign Flask session cookies
+OKTA_CLIENT_ID = Client If from Okta app integration  
+OKTA_CLIENT_SECRET = Client secret from Okta app integration  
+OKTA_ISSUER = Okta authorization server issuer<br>
+FLASK_SECRET_KEY = ramdom string used to sign Flask session cookies  

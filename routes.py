@@ -1,5 +1,6 @@
-from flask import Blueprint, session, jsonify, render_template
-from roles import require_role
+from flask import Blueprint, session, jsonify, render_template, request
+from roles import require_role 
+import okta_api
 
 routes_bp = Blueprint("routes", __name__)
 
@@ -67,19 +68,72 @@ def dashboard():
 @routes_bp.route("/admin/users")
 @require_role("Admin")
 def manage_users():
-    return jsonify({
-        "message": "User management panel (Admin only)",
-        "sample_data": ["user1@zest.com", "user2@zest.com", "user3@zest.com"]
-    })
+    try:
+        okta_users = okta_api.list_users()
+        user_summary = [
+            {"email": u["profile"]["email"], "status": u["status"]}
+            for u in okta_users
+        ]
+        return jsonify({
+            "message": "User management panel (Admin only)",
+            "user_count": len(user_summary),
+            "users": user_summary
+        })
+    except Exception as e:
+        return jsonify({"error": "Failed to fetch directory", "detail": str(e)}), 502
+
 
 
 @routes_bp.route("/reports")
 @require_role("Admin", "Analyst")
 def reports():
-    return jsonify({
-        "message": "Reports dashboard (Admin or Analyst)",
-        "sample_data": {"active_users": 1240, "signups_this_week": 87}
-    })
+    user = session.get("user")
+    groups = user.get("groups", [])
+
+    event_filter = request.args.get("event_filter", "")
+    since = request.args.get("since", "")
+    until = request.args.get("until", "")
+
+    try:
+        okta_logs = okta_api.list_logs()
+        logs_summary = [
+            {
+                "Event Type": log["eventType"],
+                "Date": log.get("published", "N/A"),
+                "Actor": log["actor"]["displayName"],
+                "Outcome": log["outcome"],
+                "Severity": log["severity"],
+                "Message": log["displayMessage"],
+            }
+            for log in okta_logs
+        ]
+
+        if event_filter:
+            logs_summary = [l for l in logs_summary if l["Event Type"] == event_filter]
+
+        if since:
+            logs_summary = [l for l in logs_summary if l["Date"] >= since]
+
+        if until:
+            logs_summary = [l for l in logs_summary if l["Date"] <= until + "T23:59:59"]
+
+        event_types = sorted({l["Event Type"] for l in logs_summary})
+
+        return render_template(
+            "report.html",
+            user=user,
+            groups=groups,
+            logs=logs_summary,
+            event_types=event_types,
+            selected_filter=event_filter,
+            since=since,
+            until=until,
+            initials=get_initials(user.get("name")),
+            role_colors=ROLE_COLORS,
+        )
+
+    except Exception as e:
+        return jsonify({"error": "Failed to fetch logs", "detail": str(e)}), 502
 
 
 @routes_bp.route("/training")

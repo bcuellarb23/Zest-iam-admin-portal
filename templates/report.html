@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zest Reports</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Namdhinggo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="{{ img_path }}favicon.ico">
+</head>
+<body class="dash-body">
+  <div class="wrap-dash">
+    <div class="topline">
+      <div>
+        <p class="eyebrow">Workforce Identity Portal</p>
+        <div class="brand"><span class="dot"></span> Zest Admin</div>
+      </div>
+      <div class="session-tag"><span class="dot"></span> session active</div>
+    </div>
+
+    <div class="badge">
+      <div class="badge-top">
+        <div class="badge-person">
+          <div class="avatar">{{ initials }}</div>
+          <div>
+            <p class="badge-id">ID · {{ user.get('sub', 'UNKNOWN')[:14] }}</p>
+            <p class="badge-name">{{ user.get('name', 'Unknown User') }}</p>
+            <p class="badge-email">{{ user.get('email', '') }}</p>
+          </div>
+        </div>
+        <div class="clearance-chips">
+          {% for group in groups %}
+            <span class="chip">
+              <span class="swatch" style="background:{{ role_colors.get(group, '#999') }}"></span>
+              {{ group }}
+            </span>
+          {% else %}
+            <span class="chip">No roles</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="credential-line">
+        <span>Authorized Personnel Only</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <p class="section-label">Audit Logs</p>
+      <span class="section-count"><strong>{{ logs|length }}</strong> entries</span>
+    </div>
+
+    <div class="filter-bar">
+      <form method="GET" action="/reports" class="filter-form">
+        <div class="filter-group">
+          <label class="filter-label" for="event_filter">Event Type</label>
+          <select name="event_filter" id="event_filter" class="filter-select">
+            <option value="">All Events</option>
+            {% for etype in event_types %}
+              <option value="{{ etype }}" {{ 'selected' if etype == selected_filter }}>{{ etype }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="since">Since</label>
+          <input type="date" name="since" id="since" class="filter-input" value="{{ since }}">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="until">Until</label>
+          <input type="date" name="until" id="until" class="filter-input" value="{{ until }}">
+        </div>
+        <button type="submit" class="filter-btn">Apply</button>
+      </form>
+    </div>
+
+    <div class="log-box">
+      {% if logs %}
+        {% for log in logs %}
+          <div class="log-entry">
+            <div class="log-top">
+              <span class="log-event">{{ log['Event Type'] }}</span>
+              <span class="log-date">{{ log['Date'] }}</span>
+            </div>
+            <div class="log-detail">
+              <span class="log-label">Actor</span>
+              <span class="log-value">{{ log['Actor'] }}</span>
+            </div>
+            <div class="log-detail">
+              <span class="log-label">Outcome</span>
+              <span class="log-value log-outcome-{{ log['Outcome'].get('result', 'unknown') }}">{{ log['Outcome'].get('result', 'N/A') }}</span>
+            </div>
+            <div class="log-detail">
+              <span class="log-label">Severity</span>
+              <span class="log-value log-severity-{{ log['Severity'] }}">{{ log['Severity'] }}</span>
+            </div>
+            <div class="log-detail">
+              <span class="log-label">Message</span>
+              <span class="log-value">{{ log['Message'] }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="log-empty">
+          <p>No logs found for the selected filters.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <footer class="dash-footer">
+      <span>Authenticated via Okta · OIDC</span>
+      <a href="/logout">Log out</a>
+    </footer>
+  </div>
+</body>
+</html>

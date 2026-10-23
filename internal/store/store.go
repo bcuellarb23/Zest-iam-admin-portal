@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+// The interface
+type UserStore interface{}
+
 // Session represents an active user session
 type Session struct {
 	Username  string

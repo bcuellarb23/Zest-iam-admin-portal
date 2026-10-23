@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Zest Admin Portal</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Namdhinggo:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+</head>
+
+{{if .IsAuthenticated}}
+
+<body class="dash-body">
+  <div class="wrap-dash">
+    <div class="topline">
+      <div>
+        <p class="eyebrow">Workforce Identity Portal</p>
+        <div class="brand"><span class="dot"></span> Zest Admin</div>
+      </div>
+      <div class="session-tag"><span class="dot"></span> session active</div>
+    </div>
+
+    <div class="badge">
+      <div class="badge-top">
+        <div class="badge-person">
+          <div class="avatar">{{.Initials}}</div>
+          <div>
+            <p class="badge-id">ID · {{.User.Sub}}</p>
+            <p class="badge-name">{{.User.Name}}</p>
+            <p class="badge-email">{{.User.Email}}</p>
+          </div>
+        </div>
+        <div class="clearance-chips">
+          {{range .Groups}}
+          <span class="chip">
+            <span class="swatch" style="background:{{with index $.RoleColors .}}{{.}}{{else}}#999{{end}}"></span>
+            {{.}}
+          </span>
+          {{else}}
+          <span class="chip">No roles</span>
+          {{end}}
+        </div>
+      </div>
+      <div class="credential-line">
+        <span>Authorized Personnel Only</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <p class="section-label">Access Panels</p>
+      <span class="section-count"><strong>{{.UnlockedCount}}</strong> of {{.TotalCount}} unlocked</span>
+    </div>
+
+    <div class="grid">
+      {{range .Sections}}
+      <div class="panel {{if .Unlocked}}unlocked{{else}}locked{{end}}">
+        <div class="panel-top">
+          <div class="panel-icon">
+            {{if .Unlocked}}
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10V7a5 5 0 0 1 9.9-1" stroke="#4C7A5D" stroke-width="2" stroke-linecap="round" />
+              <rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#4C7A5D" stroke-width="2" />
+            </svg>
+            {{else}}
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="#A0A0A6" stroke-width="2" stroke-linecap="round" />
+              <rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#A0A0A6" stroke-width="2" />
+            </svg>
+            {{end}}
+          </div>
+          <span class="status {{if .Unlocked}}unlocked{{else}}locked{{end}}">
+            {{if .Unlocked}}Unlocked{{else}}Locked{{end}}
+          </span>
+        </div>
+        <p class="panel-name">{{.Name}}</p>
+        <p class="panel-desc">{{.Description}}</p>
+        {{if .Unlocked}}
+        <a class="open-link" href="{{.URL}}">Open →</a>
+        {{end}}
+      </div>
+      {{end}}
+    </div>
+    {{else}}
+    <div>
+      <p>Hello!</p>
+      <form method="get" action="/signin">
+        <button id="signin-button" type="submit">Sign in</button>
+      </form>
+      {{end}}
+      <footer class="dash-footer">
+        <span>Authenticated via Okta · OIDC</span>
+        <a href="/logout">Log out</a>
+      </footer>
+    </div>
+</body>
+
+</html>

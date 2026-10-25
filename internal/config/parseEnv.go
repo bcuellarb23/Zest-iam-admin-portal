@@ -1,4 +1,5 @@
-package config
+// FIXME: This whole package will be deleted, It won't be used anymore, Know we use godotenv
+/* package config
 
 import (
 	"bufio"
@@ -45,10 +46,11 @@ func setEnvVariable(env string, current string) {
 	lookInFile.Split(bufio.ScanLines)
 
 	for lookInFile.Scan() {
+
 		parts := strings.Split(lookInFile.Text(), "=")
 		key, value := parts[0], parts[1]
 		if key == env {
 			os.Setenv(key, value)
 		}
 	}
-}
+} */

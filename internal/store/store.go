@@ -7,7 +7,10 @@ import (
 )
 
 // The interface
-type UserStore interface{}
+type UserStore interface {
+	SessionStore(sessionID string, userID int) error
+	GetSession(SessionID string) (int, error)
+}
 
 // Session represents an active user session
 type Session struct {

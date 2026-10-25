@@ -4,9 +4,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/bcuellarb23/Zest-iam-admin-portal/internal/store"
 	oktaUtils "github.com/okta/samples-golang/okta-hosted-login/utils"
 )
 
+// FIXME: Use Okta Developer web page to fix this handler, Remember we are using OIDC for authentication. remember also grabbing data from the .env
 func SigninHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "no-cache")
 
@@ -30,14 +32,15 @@ func SigninHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignoutHandler(w http.ResponseWriter, r *http.Request) {
-	session, err := sessionStore.Get(r, "Okta-hosted-signin-session-store")
+	cur_session := store.NewSessionStore()
+	session, err := cur_session.Get("Okta-hosted-signin-session-store")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-
-	delete(session.Values, "id_token")
-	delete(session.Values, "access_token")
+	_ = session
+	/* delete(//session.Values, "id_token")
+	delete(//session.Values, "access_token")
 
 	session.Save(r, w)
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, "/", http.StatusFound) */
 }
